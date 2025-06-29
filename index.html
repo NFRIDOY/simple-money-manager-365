@@ -222,24 +222,84 @@
 
     <script>
         // In-memory storage (replaces localStorage for this environment)
+
+        // Set-Get func 
+
+        function setGet(i) {
+            localStorage.setItem(`account ${i}`, JSON.stringify(accountsData[i]));
+            const storedUser = JSON.parse(localStorage.getItem(`account ${i}`));
+
+            return storedUser;
+        }
+
+        // 4 func CRUD
+
+        function createUser(i, user) {
+            localStorage.setItem(`ac${i}`, JSON.stringify(user));
+        }
+
+        function readUser(i) {
+            const data = localStorage.getItem(`ac${i}`);
+            return data ? JSON.parse(data) : { name: `Account ${i}`, title: "", deposits: 0, withdrawals: 0, balance: 0 };
+        }
+
+        function updateUser(i, updates) {
+            const user = readUser(i);
+            if (!user) return;
+
+            const updatedUser = { ...user, ...updates };
+            localStorage.setItem(`ac${i}`, JSON.stringify(updatedUser));
+        }
+
+        // USE CASE : updateUser(1, { role: 'superadmin' });
+
+        function deleteUser(i) {
+            localStorage.removeItem(`ac${i}`);
+        }
+
         // Retrieve data
+        function retrieveData(i) {
+            const userDeposits = localStorage.getItem(`Account ${i} deposits`) || 0;
+            const userWithdrawals = localStorage.getItem(`Account ${i} withdrawals`) || 0;
+
+            return {
+                userDeposits,
+                userWithdrawals
+            }
+        }
 
 
-        let accountsData = {};
+        // let accountsData = {};
+        let accountsData = [];
 
         // Initialize accounts
         function initializeAccounts() {
             for (let i = 1; i <= 12; i++) {
-                const user = localStorage.getItem(`Account ${i}`) || ``;
+                // const user = localStorage.getItem(`Account ${i}`) || ``;
+                // const userDeposits = localStorage.getItem(`Account ${i} deposits`) || 0;
+                // const userWithdrawals = localStorage.getItem(`Account ${i} withdrawals`) || 0;
                 // console.log(user); // "NF"
+                // if (!accountsData[i]) {
+                //     accountsData[i] = {
+                //         name: `Account ${i}`,
+                //         title: `${user}`,
+                //         deposits: userDeposits || 0,
+                //         // deposits: userDeposits || 0,
+                //         withdrawals: userWithdrawals || 0
+                //     };
+                // }
+                accountsData = readUser(i) || {}
                 if (!accountsData[i]) {
                     accountsData[i] = {
-                        name: `Account ${i}`,
-                        title: `${user}`,
-                        deposits: 0,
-                        withdrawals: 0
+                        name: accountsData?.name || `Account ${i}`,
+                        title: accountsData?.title || '',
+                        deposits: accountsData?.deposits || 0,
+                        // deposits: userDeposits || 0,
+                        withdrawals: accountsData?.withdrawals || 0,
+                        balance: accountsData?.balance || 0,
                     };
                 }
+                createUser(i, accountsData[i])
             }
             renderAccounts();
             updateTotals();
@@ -251,7 +311,12 @@
             grid.innerHTML = '';
 
             for (let i = 1; i <= 12; i++) {
-                const account = accountsData[i];
+                // localStorage.setItem(`account ${i}`, JSON.stringify(accountsData[i]));
+                // const storedUser = JSON.parse(localStorage.getItem(`ac${i}`));
+                // console.log(storedUser.name); // "NF"
+                // const account = accountsData[i];
+                // const account = storedUser;
+                const account = readUser(i);
                 const balance = account.deposits - account.withdrawals;
 
                 const accountCard = document.createElement('div');
@@ -315,8 +380,13 @@
 
             if (type === 'deposit') {
                 accountsData[accountId].deposits += amount;
+                // Save data
+                localStorage.setItem(`Account ${accountId} deposits`, `${accountsData[accountId].deposits}`);
+
             } else if (type === 'withdraw') {
                 accountsData[accountId].withdrawals += amount;
+                // Save data
+                localStorage.setItem(`Account ${accountId} withdrawals`, `${accountsData[accountId].withdrawals}`);
             }
 
             amountInput.value = '';
