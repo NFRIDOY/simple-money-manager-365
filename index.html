@@ -64,6 +64,10 @@
             color: #e74c3c;
         }
 
+        .balance-total {
+            color: #2737ae;
+        }
+
         .accounts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -211,6 +215,10 @@
             <div class="summary-card">
                 <h3>Total Withdrawals</h3>
                 <div class="amount withdraw-total" id="totalWithdrawals">$0.00</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Balance</h3>
+                <div class="amount balance-total" id="totalBalance">$0.00</div>
             </div>
         </div>
 
@@ -404,14 +412,20 @@
         function updateTotals() {
             let totalDeposits = 0;
             let totalWithdrawals = 0;
+            let totalBalance = 0;
 
             for (let i = 1; i <= 12; i++) {
                 totalDeposits += accountsData[i].deposits;
                 totalWithdrawals += accountsData[i].withdrawals;
             }
 
+            totalBalance = totalDeposits - totalWithdrawals;
+
+            console.log("totalBalance", totalBalance)
+
             document.getElementById('totalDeposits').textContent = `$${totalDeposits.toFixed(2)}`;
             document.getElementById('totalWithdrawals').textContent = `$${totalWithdrawals.toFixed(2)}`;
+            document.getElementById('totalBalance').textContent = `$${totalBalance.toFixed(2)}`;
         }
 
         function resetData() {
