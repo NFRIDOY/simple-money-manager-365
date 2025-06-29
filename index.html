@@ -91,7 +91,8 @@
         .account-name {
             width: 100%;
             padding: 8px;
-            border: 2px solid #ddd;
+            /* border: 2px solid #ddd; */
+            border: none;
             border-radius: 5px;
             font-size: 14px;
             text-align: center;
@@ -324,7 +325,7 @@
                 accountCard.className = 'account-card';
                 accountCard.innerHTML = `
                     <div class="account-header">
-                        <h3>Account ${i}</h3>
+                        
                         <input type="text" class="account-name" value="${account.title}" 
                                onchange="updateAccountName(${i}, this.value)" placeholder="Account Title">
                     </div>
