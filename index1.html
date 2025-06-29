@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .summary-item.deposit {
+            border-left: 4px solid #27ae60;
+        }
+
+        .summary-item.withdraw {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .summary-item h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .summary-item .amount {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .deposit .amount {
+            color: #27ae60;
+        }
+
+        .withdraw .amount {
+            color: #e74c3c;
+        }
+
+        .clear-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .clear-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .account-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid #ecf0f1;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .account-header {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        .amount-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .action-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .deposit-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .deposit-btn:hover {
+            background: #229954;
+            transform: translateY(-1px);
+        }
+
+        .withdraw-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .withdraw-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .balance-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .balance-item {
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+
+        .balance-item.deposit {
+            border-left: 3px solid #27ae60;
+        }
+
+        .balance-item.withdraw {
+            border-left: 3px solid #e74c3c;
+        }
+
+        .balance-label {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .balance-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .balance-item.deposit .balance-amount {
+            color: #27ae60;
+        }
+
+        .balance-item.withdraw .balance-amount {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Money Management System</h1>
+            <p>Track your deposits and withdrawals across 12 accounts</p>
+        </div>
+
+        <div class="summary">
+            <div class="summary-grid">
+                <div class="summary-item deposit">
+                    <h3>Total Deposits</h3>
+                    <div class="amount" id="totalDeposits">$0.00</div>
+                </div>
+                <div class="summary-item withdraw">
+                    <h3>Total Withdrawals</h3>
+                    <div class="amount" id="totalWithdrawals">$0.00</div>
+                </div>
+                <button class="clear-btn" onclick="clearAllData()">Clear All Data</button>
+            </div>
+        </div>
+
+        <div class="accounts-grid" id="accountsGrid">
+            <!-- Accounts will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // In-memory storage (replace with localStorage in your own environment)
+        let accountsData = {};
+
+        // Initialize accounts data
+        for (let i = 1; i <= 12; i++) {
+            accountsData[i] = {
+                deposits: 0,
+                withdrawals: 0
+            };
+        }
+
+        function generateAccounts() {
+            const grid = document.getElementById('accountsGrid');
+            
+            for (let i = 1; i <= 12; i++) {
+                const accountCard = document.createElement('div');
+                accountCard.className = 'account-card';
+                accountCard.innerHTML = `
+                    <div class="account-header">Account ${i}</div>
+                    
+                    <div class="input-group">
+                        <label>Enter Amount</label>
+                        <input type="number" class="amount-input" id="amount${i}" 
+                               placeholder="0.00" step="0.01" min="0">
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="action-btn deposit-btn" onclick="deposit(${i})">
+                            💰 Deposit
+                        </button>
+                        <button class="action-btn withdraw-btn" onclick="withdraw(${i})">
+                            💸 Withdraw
+                        </button>
+                    </div>
+                    
+                    <div class="balance-display">
+                        <div class="balance-item deposit">
+                            <div class="balance-label">Deposits</div>
+                            <div class="balance-amount" id="deposits${i}">$0.00</div>
+                        </div>
+                        <div class="balance-item withdraw">
+                            <div class="balance-label">Withdrawals</div>
+                            <div class="balance-amount" id="withdrawals${i}">$0.00</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(accountCard);
+            }
+        }
+
+        function deposit(accountId) {
+            const amountInput = document.getElementById(`amount${accountId}`);
+            const amount = parseFloat(amountInput.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            accountsData[accountId].deposits += amount;
+            amountInput.value = '';
+            
+            updateDisplay();
+            saveData();
+        }
+
+        function withdraw(accountId) {
+            const amountInput = document.getElementById(`amount${accountId}`);
+            const amount = parseFloat(amountInput.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            accountsData[accountId].withdrawals += amount;
+            amountInput.value = '';
+            
+            updateDisplay();
+            saveData();
+        }
+
+        function updateDisplay() {
+            let totalDeposits = 0;
+            let totalWithdrawals = 0;
+            
+            for (let i = 1; i <= 12; i++) {
+                const deposits = accountsData[i].deposits;
+                const withdrawals = accountsData[i].withdrawals;
+                
+                document.getElementById(`deposits${i}`).textContent = `$${deposits.toFixed(2)}`;
+                document.getElementById(`withdrawals${i}`).textContent = `$${withdrawals.toFixed(2)}`;
+                
+                totalDeposits += deposits;
+                totalWithdrawals += withdrawals;
+            }
+            
+            document.getElementById('totalDeposits').textContent = `$${totalDeposits.toFixed(2)}`;
+            document.getElementById('totalWithdrawals').textContent = `$${totalWithdrawals.toFixed(2)}`;
+        }
+
+        function saveData() {
+            // In a real environment, you would use:
+            // localStorage.setItem('moneyManagementData', JSON.stringify(accountsData));
+            console.log('Data saved:', accountsData);
+        }
+
+        function loadData() {
+            // In a real environment, you would use:
+            // const saved = localStorage.getItem('moneyManagementData');
+            // if (saved) {
+            //     accountsData = JSON.parse(saved);
+            // }
+            console.log('Data loaded:', accountsData);
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                for (let i = 1; i <= 12; i++) {
+                    accountsData[i] = {
+                        deposits: 0,
+                        withdrawals: 0
+                    };
+                }
+                
+                // Clear all input fields
+                for (let i = 1; i <= 12; i++) {
+                    document.getElementById(`amount${i}`).value = '';
+                }
+                
+                updateDisplay();
+                saveData();
+                
+                // In a real environment, you would also use:
+                // localStorage.removeItem('moneyManagementData');
+            }
+        }
+
+        // Initialize the application
+        window.onload = function() {
+            generateAccounts();
+            loadData();
+            updateDisplay();
+        };
+    </script>
+</body>
+</html>
