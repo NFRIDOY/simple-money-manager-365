@@ -82,6 +82,25 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
+        .notify-card {
+            /* transform: ;
+            transition: transform 0.3s ease; */
+            /* animation: fadeToRed 2s forwards; */
+            /* background: red; */
+            animation: pulseRed 0.5s infinite alternate;
+        }
+
+        @keyframes pulseRed {
+            from {
+                background: white;
+            }
+
+            to {
+                background: red;
+            }
+        }
+
+
         .account-header {
             text-align: center;
             margin-bottom: 15px;
@@ -298,7 +317,7 @@
                 //     };
                 // }
                 accountsData[i] = readUser(i) || {}
-                console.log("Init", accountsData)
+                // console.log("Init", accountsData)
                 if (!accountsData[i]) {
                     accountsData[i] = {
                         name: accountsData?.name || `Account ${i}`,
@@ -312,6 +331,7 @@
             }
             renderAccounts();
             updateTotals();
+            // notify();
         }
 
         // Render all accounts
@@ -326,9 +346,12 @@
                 // const account = accountsData[i];
                 // const account = storedUser;
                 const account = readUser(i);
-                console.log("Render ac", account)
+                // console.log("Render ac", account)
                 const balance = account.deposits - account.withdrawals;
-                // updateUser(i, { balance: balance })
+                updateUser(i, { balance: balance })
+
+
+
                 const accountCard = document.createElement('div');
                 accountCard.className = 'account-card';
                 accountCard.innerHTML = `
@@ -360,12 +383,26 @@
                             <div>Withdrawals</div>
                             <div>$${account.withdrawals.toFixed(2)}</div>
                         </div>
-                        <div class="display-field balance-display">
+                        <div class="display-field balance-display" id="balance-display-id">
                             <div>Balance</div>
                             <div>$${balance.toFixed(2)}</div>
                         </div>
                     </div>
                 `;
+
+                // if (!newBalance) {
+                //     const { balance: newBalance } = readUser(i);
+                //     const balanceBtn = document.getElementById('balance-display-id')
+                //     if (newBalance < 0) {
+                //         // balanceBtn.classList.add('notify-card');
+                //         console.log("Blance Is Nagative")
+                //     }
+                //     else {
+                //         // balanceBtn.classList.remove('notify-card');
+                //         console.log("Blance Is OK")
+                //     }
+                // }
+
                 grid.appendChild(accountCard);
             }
         }
@@ -406,6 +443,7 @@
             amountInput.value = '';
             renderAccounts();
             updateTotals();
+            // notify();
         }
 
         // Update total displays
@@ -421,7 +459,7 @@
 
             totalBalance = totalDeposits - totalWithdrawals;
 
-            console.log("totalBalance", totalBalance)
+            // console.log("totalBalance", totalBalance)
 
             document.getElementById('totalDeposits').textContent = `$${totalDeposits.toFixed(2)}`;
             document.getElementById('totalWithdrawals').textContent = `$${totalWithdrawals.toFixed(2)}`;
@@ -434,8 +472,12 @@
                 updateUser(i, { deposits: 0, withdrawals: 0, balance: 0 })
                 // createUser(i, accountsData[i])
             }
+            document.getElementById('totalDeposits').textContent = `$0.00`;
+            document.getElementById('totalWithdrawals').textContent = `$0.00`;
+            document.getElementById('totalBalance').textContent = `$0.00`;
             renderAccounts();
             updateTotals();
+            // notify();
         }
         // Clear all data
         function clearAllData() {
@@ -443,6 +485,24 @@
                 accountsData = {};
                 resetData();
                 // initializeAccounts();
+            }
+        }
+
+        function notify() {
+            for (let i = 1; i <= 12; i++) {
+                if (1) {
+                    const { balance: newBalance } = readUser(i);
+                    const balanceBtn = document.getElementById('balance-display-id')
+                    if (newBalance < 0) {
+                        balanceBtn.classList.add('notify-card');
+                        console.log("Blance Is Nagative")
+                    }
+                    else {
+                        balanceBtn.classList.remove('notify-card');
+                        console.log("Blance Is OK")
+                    }
+                }
+
             }
         }
 
